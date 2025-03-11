@@ -1,5 +1,10 @@
 const express = require('express');
+const productRoutes = require('./productRoutes');
+const { logRequest } = require('./middleware');
+const { errorResponder } = require('./error.middleware');
+
 const app = express();
+const PORT = 3000;
 
 // Hardcoded in-memory products array (in a real app, data would typically come from a database)
 const products = [
@@ -8,21 +13,26 @@ const products = [
   { id: 3, name: 'Product 3', brand: 'Brand A' }
 ];
 
-// Handle GET request
+// Middleware
+app.use(logRequest);
+app.use(express.json()); // To parse JSON request bodies
+
+// Main route
 app.get('/', (request, response) => {
-  // Send back a response in plain text
-  response.send('response for GET request');
+  response.send('Response for GET request');
 });
 
-// Route with a route parameter to get products by brand
+// Route with a parameter to get products by brand
 app.get('/products/:brand', (req, res) => {
-    const { brand } = req.params; // Access the brand parameter from the URL
-  
-    // Filter products based on the brand parameter
+    const { brand } = req.params;
     const filteredProducts = products.filter(product => product.brand === brand);
-  
-    res.json(filteredProducts); // Send the filtered products as a JSON response
+    res.json(filteredProducts);
 });
-  
-// Start the server
-app.listen(3000, () => console.log(`Server started at http://localhost:3000/`));
+
+// Use external routes and error handling
+app.use(productRoutes);
+app.use(errorResponder);
+
+app.listen(PORT, () => {
+  console.log(`Server listening at http://localhost:${PORT}`);
+});
