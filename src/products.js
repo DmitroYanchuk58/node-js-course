@@ -12,6 +12,6 @@ const products = [
     { id: 10, name: 'Product 10', brand: 'Brand A' },
     { id: 11, name: 'Product 11', brand: 'Brand C' },
     { id: 12, name: 'Product 12', brand: 'Brand A' }
- ];
- 
- module.exports = products;
+];
+
+module.exports = products;
